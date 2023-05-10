@@ -1,11 +1,14 @@
 from tkinter import *
+from PIL import Image, ImageTk
 
 def main():
     main_window = Tk()
-    main_window.config(background='beige')
     main_window.attributes('-fullscreen', True)
     
-    Label(main_window, text='MAIN').pack()
+    train_image = ImageTk.PhotoImage(Image.open("D:/College/GitHub/TrainStationSimulator/resources/closed.png"))
+
+    train_image_label = Label(main_window, image = train_image)
+    train_image_label.pack()
     
     start_button = Button(main_window, 
                           text = 'Start', 
@@ -16,9 +19,10 @@ def main():
                           width=7,
                           padx=15,
                           pady=15,
-                          font = ('Helvetica', 50, 'bold'),
+                          font = ('Helvetica', 40, 'bold'),
                           activebackground='teal',
-                          activeforeground='black').place(x = 450, y = 450)
+                          activeforeground='black')
+    start_button.place(x = 1200, y = 350)
     settings_button = Button(main_window, 
                              text = 'Settings', 
                              command = settings,
@@ -28,9 +32,10 @@ def main():
                              width=7,
                              padx=15,
                              pady=15,
-                             font = ('Helvetica', 50, 'bold'),
+                             font = ('Helvetica', 40, 'bold'),
                              activebackground='teal',
-                             activeforeground='black').place(x = 1100, y = 450)
+                             activeforeground='black')
+    settings_button.place(x = 1200, y = 550)
 
 def start():
     start_window = Tk()
