@@ -1,6 +1,7 @@
 from tkinter import *
 from PIL import Image, ImageTk
 import traindataset as td
+import main
 
 user_settings = {
         'index': '',
@@ -9,13 +10,12 @@ user_settings = {
         'waiting_time': ''
     }
 
-main_window = Tk()
-main_window.attributes('-fullscreen', True)
 
-def start():
-    start_window = Tk()
-    start_window.attributes('-fullscreen', True)
-    Label(start_window, text='START').pack()
+
+# def start():
+#     start_window = Tk()
+#     start_window.attributes('-fullscreen', True)
+#     Label(start_window, text='START').pack()
 
 
 class settings:
@@ -137,7 +137,9 @@ class settings:
             self.retard_drop["menu"]["activeborderwidth"] = '4'
             self.retard_drop["menu"]["bd"] = '7'
 
-        
+    def enable(self):
+        start_button['state'] = 'normal'
+        self.settings_window.destroy()
       
         
     
@@ -232,7 +234,7 @@ class settings:
         self.waiting_drop.place(x = 150, y = 640)
         
         
-        but = Button(self.settings_window,
+        submit_button = Button(self.settings_window,
                      text='Submit',
                      command=self.print_data,
                      bd=5,
@@ -242,11 +244,11 @@ class settings:
                      font = ('Segoe UI', 20, 'bold'),
                      activebackground='#0049b5',
                      activeforeground='black')
-        but.place(x = 150, y = 800)
+        submit_button.place(x = 150, y = 800)
         
-        but = Button(self.settings_window,
+        home_button = Button(self.settings_window,
                      text='Home',
-                     command=self.settings_window.destroy,
+                     command=self.enable,
                      bd=5,
                      bg='#0049b5',
                      fg='white',
@@ -254,13 +256,12 @@ class settings:
                      font = ('Segoe UI', 20, 'bold'),
                      activebackground='#0049b5',
                      activeforeground='black')
-        but.place(x = 350, y = 800)
-        
-        
-       
-       
-    
-    
+        home_button.place(x = 350, y = 800)
+
+
+main_window = Tk()
+main_window.attributes('-fullscreen', True)
+
 title = Label(main_window, 
               text = "Train Simulator", 
               font = ('Segoe UI', 60, 'bold'), 
@@ -270,12 +271,20 @@ title.pack()
 
 train_photo = PhotoImage(file = "resources/train.png").subsample(2)
 label = Label(main_window, image=train_photo)
-label.place(x=50, y=310)
+label.place(x=50, y=360)
 
 
+def start_sim():
+    start_window = Tk()
+    start_window.attributes('-fullscreen', True)
+    Label(start_window, text=td.trains[int(user_settings['index'])]['name'], 
+                font = ('Segoe UI', 40, 'bold'), 
+                fg='#0049b5').pack()
+    main.run_simulation(int(user_settings['acceleration']), int(user_settings['retardation']), int(user_settings['index']), int(user_settings['waiting_time']), start_window)
+    # main.run_simulation(2, 5, 0, 10, start_window)
 start_button = Button(main_window, 
-                      text = 'Start', 
-                      command = start,
+                      text = 'Start',
+                      command=start_sim, 
                       bd=8,
                       bg='#0049b5',
                       fg='white',
@@ -283,7 +292,9 @@ start_button = Button(main_window,
                       font = ('Segoe UI', 40, 'bold'),
                       activebackground='#0049b5',
                       activeforeground='black')
-start_button.place(x = 1400, y = 350)
+start_button.place(x = 1400, y = 400)
+start_button['state'] = 'disabled'
+
 settings_button = Button(main_window, 
                          text = 'Settings', 
                          command = settings,
@@ -294,8 +305,5 @@ settings_button = Button(main_window,
                          font = ('Segoe UI', 40, 'bold'),
                          activebackground='#0049b5',
                          activeforeground='black')
-settings_button.place(x = 1400, y = 550)
-
-
-
+settings_button.place(x = 1400, y = 600)
 mainloop()
