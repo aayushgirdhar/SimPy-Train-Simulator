@@ -49,24 +49,6 @@ def curve():
     axs[1].set_ylabel("Speed: (km/hr)")
 
     plt.show()
-    # x = np.array(timelst)
-    # y = np.array(vel)
-
-    # # Plotting the Graph
-    # plt.plot(x, y)
-    # plt.title("Speed-Time Curve")
-    # plt.xlabel("Time:(minutes)")
-    # plt.ylabel("Speed:(km/hr)")
-    # plt.show()
-    
-    # plt.bar('Top Speed',a, color="red",
-    #     width = 0.4)
- 
-    # plt.xlabel("Courses offered")
-    # plt.ylabel("No. of students enrolled")
-    # plt.title("Students enrolled in different courses")
-    # plt.subplot(1,2,2)
-    # plt.show()
 
 class speedometer():
     # Set the self.canvas size and scale factor
@@ -241,7 +223,6 @@ class RailwayStation:
         self.root.update()
         boarding_label = tk.Label(self.output_frame, text = f'[{datetime.now(timezone("Asia/Kolkata")).strftime("%H:%M:%S")}]: You are now boarding the ' + traindataset.trains[self.index]['name'], font = ('Segoe UI', 14), fg='black', width='80', anchor='w')
         boarding_label.pack()
-        print(f'Estimated Journey Time (Real Time) - {self.estimated_time}')
         self.root.update()
         leaving_label = tk.Label(self.output_frame, text = f'[{datetime.now(timezone("Asia/Kolkata")).strftime("%H:%M:%S")}]: Train Leaving New Delhi Railway Station', font = ('Segoe UI', 14), fg='black', width='80', anchor='w')
         leaving_label.pack()
@@ -266,15 +247,3 @@ def run_simulation(acceleration,retard, index, waiting_time, root):
     env.process(railway_station.arrive())
     env.run()
     root.mainloop()
-   
-
-# top_speed = 36.11 # m/s
-# acceleration = 2 # m/s^2
-# retard = 5
-# board_delay = 5
-
-# arrival_time = run_simulation(acceleration, retard, index, waiting_time)
-
-# print(timelst)
-# print(vel)
-# curve()

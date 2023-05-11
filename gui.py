@@ -8,15 +8,7 @@ user_settings = {
         'acceleration': '',
         'retardation': '',
         'waiting_time': ''
-    }
-
-
-
-# def start():
-#     start_window = Tk()
-#     start_window.attributes('-fullscreen', True)
-#     Label(start_window, text='START').pack()
-
+}
 
 class settings:
     def __init__(self):
@@ -44,8 +36,6 @@ class settings:
         self.train_select.set('Select a Train')
         self.wait_select.set('Select Waiting Time for Each Station (Minutes)')
      
-
-  
     def print_data(self):
         r = 450
         count = 1
@@ -97,26 +87,20 @@ class settings:
             
     def get_index(self, *args):
         selected_train = self.train_select.get()
-        # print(selected_train)
         for item in td.trains:
             if item['name'] == selected_train:
                 self.index = item['no']
                 break
-        # print(f'Index:{self.index}')
 
         
     def radio(self):
-        # print(f'Radio Self.Acceleration {self.index}')
         self.selected_conditions = self.conditionSelect.get()
-        # print(self.selected_conditions)
         if self.selected_conditions == '0':
             self.values_accel = td.sard[self.index]['accelerationsun']
             self.values_retard = td.sard[self.index]['retardationsun']
         elif self.selected_conditions == '1':
             self.values_accel = td.sard[self.index]['accelerationrain']
             self.values_retard = td.sard[self.index]['retardationrain']
-        # print(self.values_retard)
-        # print(self.values_accel)
         self.accel_drop['menu'].delete(0, 'end')
         self.retard_drop['menu'].delete(0, 'end')
  
@@ -141,8 +125,6 @@ class settings:
         start_button['state'] = 'normal'
         self.settings_window.destroy()
       
-        
-    
     def elements(self):
         self.drop = OptionMenu(self.settings_window, self.train_select, *self.options, command=self.get_index)
         self.drop['background'] = '#0049b5'
@@ -194,7 +176,6 @@ class settings:
         self.accel_drop["activeforeground" ] = "white"
         self.accel_drop["font"] = ("Segoe UI", 14)
         self.accel_drop["height"] = '1'
-        # self.accel_drop['width'] = '20'
         self.accel_drop["bd"] = 5
         self.accel_drop["relief"] = "ridge"
         self.accel_drop["pady"] = 10
@@ -207,7 +188,6 @@ class settings:
         self.retard_drop["activeforeground" ] = "white"
         self.retard_drop["font"] = ("Segoe UI", 14)
         self.retard_drop["height"] = '1'
-        # self.retard_drop['width'] = '20'
         self.retard_drop["bd"] = 5
         self.retard_drop["relief"] = "ridge"
         self.retard_drop["padx"] = 10
@@ -281,7 +261,6 @@ def start_sim():
                 font = ('Segoe UI', 40, 'bold'), 
                 fg='#0049b5').pack()
     main.run_simulation(int(user_settings['acceleration']), int(user_settings['retardation']), int(user_settings['index']), int(user_settings['waiting_time']), start_window)
-    # main.run_simulation(2, 5, 0, 10, start_window)
 start_button = Button(main_window, 
                       text = 'Start',
                       command=start_sim, 
