@@ -2,87 +2,276 @@ from tkinter import *
 from PIL import Image, ImageTk
 import traindataset as td
 
+user_settings = {
+        'index': '',
+        'acceleration': '',
+        'retardation': '',
+        'waiting_time': ''
+    }
+
 main_window = Tk()
 main_window.attributes('-fullscreen', True)
 
 def start():
     start_window = Tk()
     start_window.attributes('-fullscreen', True)
-    
     Label(start_window, text='START').pack()
 
-def settings():
-    def unlock_dropdown():
-        accel_drop = OptionMenu(settings_window, accel_select, values_accel)
-        accel_drop.pack()
-        retard_drop = OptionMenu(settings_window, retard_select, values_retard)
-        retard_drop.pack()
-    def getData():
-        r = 50
+
+class settings:
+    def __init__(self):
+        self.settings_window = Tk()
+        self.settings_window.attributes('-fullscreen', True)
+        Label(self.settings_window, 
+              text='Settings', 
+              font = ('Segoe UI', 60, 'bold'), 
+              fg='#0049b5').pack()
+        self.index = 0
+        self.selected_train = ''
+        self.train_select = StringVar(self.settings_window)
+        self.options = [td.trains[0]['name'], td.trains[1]['name'], td.trains[2]['name']]
+        self.conditionSelect = StringVar(self.settings_window)
+        self.values_accel = []
+        self.values_retard = []
+        self.accel_select = StringVar(self.settings_window)
+        self.retard_select = StringVar(self.settings_window)
+        self.wait_select = StringVar(self.settings_window)
+        self.elements()
+        self.flag = False
+        self.get_index()
+        self.accel_select.set(f'Select Train Acceleration(m/s\u00b2 )')
+        self.retard_select.set('Select Train Retardation (m/s\u00b2 )')
+        self.train_select.set('Select a Train')
+        self.wait_select.set('Select Waiting Time for Each Station (Minutes)')
+     
+
+  
+    def print_data(self):
+        r = 450
         count = 1
-        index = -1
-        selected_train = trainSelect.get()
-        values_accel = []
-        values_retard = []
+        self.selected_train = self.train_select.get()
+        self.selected_accel = self.accel_select.get()
+        self.selected_retard = self.retard_select.get()
+        self.selected_wait = self.wait_select.get()
+        
+        user_settings.update({'index': self.index}) 
+        user_settings.update({'acceleration': self.selected_accel}) 
+        user_settings.update({'retardation': self.selected_retard}) 
+        user_settings.update({'waiting_time': self.selected_wait}) 
+        
+        print(user_settings)
+        name_label = Label(self.settings_window, 
+                            text= self.selected_train,
+                            font = ('Segoe UI', 20, 'bold'), 
+                            fg='#0049b5').place(x = 1000, y = 300)
+        stations = td.trains[self.index]['stations']
+        header = Label(self.settings_window, 
+                       text="Intermediate Stations",
+                       font = ('Segoe UI', 14), 
+                       fg='#0049b5')
+        header.place(x = 1000, y = 400)
+        for i in stations:
+            station_label = Label(self.settings_window, 
+                                  text=f'{count}.{i}',
+                                  font = ('Segoe UI', 14), 
+                                  fg='black')
+            station_label.place(x=1030, y=r)
+            r += 30
+            count = count + 1
+            
+        accel_label = Label(self.settings_window, 
+                            text = f'Acceleration = {self.selected_accel} m/s\u00b2 ',
+                            font = ('Segoe UI', 14), 
+                            fg='black')
+        retard_label = Label(self.settings_window, 
+                            text = f'Retardation = {self.selected_retard} m/s\u00b2 ',
+                            font = ('Segoe UI', 14), 
+                            fg='black')
+        wait_label = Label(self.settings_window, 
+                            text = f'Waiting Time = {self.selected_wait} minutes',
+                            font = ('Segoe UI', 14), 
+                            fg='black')
+        accel_label.place(x = 1000, y = 600)
+        retard_label.place(x = 1000, y = 650)
+        wait_label.place(x = 1000, y = 700)
+            
+    def get_index(self, *args):
+        selected_train = self.train_select.get()
+        # print(selected_train)
         for item in td.trains:
             if item['name'] == selected_train:
-                index = item['no']
+                self.index = item['no']
                 break
-        name_label = Label(settings_window, text=f'Train Selected - {selected_train}').pack()
-        stations = td.trains[index]['stations']
-        header = Label(settings_window, text="Intermediate Stations")
-        header.pack()
-        for i in stations:
-            station_label = Label(settings_window, text =f'{count}.{i}')
-            station_label.place(x = 20, y = r)
-            r += 20
-            count = count + 1
+        # print(f'Index:{self.index}')
+
         
-        selected_conditions = conditionSelect.get()
-        accel_select = StringVar(settings_window)
-        accel_select.set('Select Train Acceleration')
+    def radio(self):
+        # print(f'Radio Self.Acceleration {self.index}')
+        self.selected_conditions = self.conditionSelect.get()
+        # print(self.selected_conditions)
+        if self.selected_conditions == '0':
+            self.values_accel = td.sard[self.index]['accelerationsun']
+            self.values_retard = td.sard[self.index]['retardationsun']
+        elif self.selected_conditions == '1':
+            self.values_accel = td.sard[self.index]['accelerationrain']
+            self.values_retard = td.sard[self.index]['retardationrain']
+        # print(self.values_retard)
+        # print(self.values_accel)
+        self.accel_drop['menu'].delete(0, 'end')
+        self.retard_drop['menu'].delete(0, 'end')
+ 
+        for values in self.values_accel:
+            self.accel_drop['menu'].add_command(label=values, command=lambda v=values: self.accel_select.set(v))
+            self.accel_drop["menu"]["background"] = "white"
+            self.accel_drop["menu"]["foreground"] = "#0049b5"
+            self.accel_drop["menu"]["font"] = ('Segoe UI', 14)
+            self.accel_drop["menu"]["selectcolor"] = "#0049b5"
+            self.accel_drop["menu"]["activeborderwidth"] = '4'
+            self.accel_drop["menu"]["bd"] = '7'
+        for values in self.values_retard:
+            self.retard_drop['menu'].add_command(label=values,command=lambda v=values: self.retard_select.set(v))
+            self.retard_drop["menu"]["background"] = "white"
+            self.retard_drop["menu"]["foreground"] = "#0049b5"
+            self.retard_drop["menu"]["font"] = ('Segoe UI', 14)
+            self.retard_drop["menu"]["selectcolor"] = "#0049b5"
+            self.retard_drop["menu"]["activeborderwidth"] = '4'
+            self.retard_drop["menu"]["bd"] = '7'
+
         
-        retard_select = StringVar(settings_window)
-        retard_select.set('Select Train Retardation')
+      
         
-        if(selected_conditions == '0'):
-            values_accel = td.sard[index]['accelerationsun']
-            values_retard = td.sard[index]['retardationsun']
-        elif(selected_conditions == '1'):
-            values_accel = td.sard[index]['accelerationrain']
-            values_retard = td.sard[index]['retardationrain']
     
+    def elements(self):
+        self.drop = OptionMenu(self.settings_window, self.train_select, *self.options, command=self.get_index)
+        self.drop['background'] = '#0049b5'
+        self.drop['foreground'] = 'white'
+        self.drop["activebackground" ] = "#0049b5"
+        self.drop["activeforeground" ] = "white"
+        self.drop["font"] = ("Segoe UI", 14)
+        self.drop["height"] = '1'
+        self.drop["bd"] = 5
+        self.drop["relief"] = "ridge"
+        self.drop["pady"] = 10
+        self.drop["padx"] = 10
+        self.drop["menu"]["background"] = "white"
+        self.drop["menu"]["foreground"] = "#0049b5"
+        self.drop["menu"]["font"] = ('Segoe UI', 14)
+        self.drop["menu"]["selectcolor"] = "#0049b5"
+        self.drop["menu"]["activeborderwidth"] = '4'
+        self.drop["menu"]["bd"] = '7'
+        self.drop.place(x = 150, y = 300)
         
-    settings_window = Tk()
-    settings_window.attributes('-fullscreen', True)
-    Label(settings_window, text='Settings').pack()
+        Label(self.settings_window, 
+                text="Select Weather Conditions", 
+                font = ('Segoe UI', 14), 
+                fg='#0049b5').place(x = 150, y = 380)
+        self.sunny = Radiobutton(self.settings_window, 
+                                 text='Sunny', 
+                                 variable=self.conditionSelect, 
+                                 value='0', 
+                                 command=self.radio,
+                                 font=("Segoe UI", 14), 
+                                 fg="black", 
+                                 padx=10, 
+                                 pady=5)
+        self.rainy = Radiobutton(self.settings_window, 
+                                 text='Rainy', 
+                                 variable=self.conditionSelect, 
+                                 value='1', 
+                                 command=self.radio,
+                                 font=("Segoe UI", 14), 
+                                 fg="black",
+                                 padx=10, 
+                                 pady=5)
+        self.sunny.place(x = 140, y = 410)
+        self.rainy.place(x = 240, y = 410)
+        self.accel_drop = OptionMenu(self.settings_window,self.accel_select,"")
+        self.accel_drop['background'] = '#0049b5'
+        self.accel_drop['foreground'] = 'white'
+        self.accel_drop["activebackground" ] = "#0049b5"
+        self.accel_drop["activeforeground" ] = "white"
+        self.accel_drop["font"] = ("Segoe UI", 14)
+        self.accel_drop["height"] = '1'
+        # self.accel_drop['width'] = '20'
+        self.accel_drop["bd"] = 5
+        self.accel_drop["relief"] = "ridge"
+        self.accel_drop["pady"] = 10
+        self.accel_drop["padx"] = 10
+        self.accel_drop.place(x = 150, y = 480)
+        self.retard_drop = OptionMenu(self.settings_window,self.retard_select,"")
+        self.retard_drop['background'] = '#0049b5'
+        self.retard_drop['foreground'] = 'white'
+        self.retard_drop["activebackground" ] = "#0049b5"
+        self.retard_drop["activeforeground" ] = "white"
+        self.retard_drop["font"] = ("Segoe UI", 14)
+        self.retard_drop["height"] = '1'
+        # self.retard_drop['width'] = '20'
+        self.retard_drop["bd"] = 5
+        self.retard_drop["relief"] = "ridge"
+        self.retard_drop["padx"] = 10
+        self.retard_drop["pady"] = 10
+        self.retard_drop.place(x = 150, y = 560)
+        
+        self.waiting_drop = OptionMenu(self.settings_window, self.wait_select, 10, 20, 30, 40, 50, 60)
+        self.waiting_drop['background'] = '#0049b5'
+        self.waiting_drop['foreground'] = 'white'
+        self.waiting_drop["activebackground" ] = "#0049b5"
+        self.waiting_drop["activeforeground" ] = "white"
+        self.waiting_drop["font"] = ("Segoe UI", 14)
+        self.waiting_drop["height"] = '1'
+        self.waiting_drop["bd"] = 5
+        self.waiting_drop["relief"] = "ridge"
+        self.waiting_drop["pady"] = 10
+        self.waiting_drop["padx"] = 10
+        self.waiting_drop["menu"]["background"] = "white"
+        self.waiting_drop["menu"]["foreground"] = "#0049b5"
+        self.waiting_drop["menu"]["font"] = ('Segoe UI', 14)
+        self.waiting_drop["menu"]["selectcolor"] = "#0049b5"
+        self.waiting_drop["menu"]["activeborderwidth"] = '4'
+        self.waiting_drop["menu"]["bd"] = '7'
+        self.waiting_drop.place(x = 150, y = 640)
+        
+        
+        but = Button(self.settings_window,
+                     text='Submit',
+                     command=self.print_data,
+                     bd=5,
+                     bg='#0049b5',
+                     fg='white',
+                     width=9,
+                     font = ('Segoe UI', 20, 'bold'),
+                     activebackground='#0049b5',
+                     activeforeground='black')
+        but.place(x = 150, y = 800)
+        
+        but = Button(self.settings_window,
+                     text='Home',
+                     command=self.settings_window.destroy,
+                     bd=5,
+                     bg='#0049b5',
+                     fg='white',
+                     width=9,
+                     font = ('Segoe UI', 20, 'bold'),
+                     activebackground='#0049b5',
+                     activeforeground='black')
+        but.place(x = 350, y = 800)
+        
+        
+       
+       
     
-    options = [td.trains[0]['name'], td.trains[1]['name'], td.trains[2]['name']]
     
-    trainSelect = StringVar(settings_window)
-    trainSelect.set('Select a train')
-    
-    drop = OptionMenu(settings_window, trainSelect, *options)
-    drop.pack()
-    
-    conditionSelect = StringVar(settings_window)
-    sunny = Radiobutton(settings_window, text = 'Sunny', variable=conditionSelect, value = 0, command=unlock_dropdown)
-    sunny.pack()
-    
-    rainy = Radiobutton(settings_window, text = 'Rainy', variable=conditionSelect, value = 1, command=unlock_dropdown)
-    rainy.pack()
-    
-    button = Button(settings_window, text='Submit', command=getData)
-    button.pack()
-    
-    
-title = Label(main_window, text = "Train Station Simulator", font = ('Segoe UI', 60, 'bold'), fg='#0049b5',)
+title = Label(main_window, 
+              text = "Train Simulator", 
+              font = ('Segoe UI', 60, 'bold'), 
+              fg='#0049b5')
 title.pack()
 
 
 train_photo = PhotoImage(file = "resources/train.png").subsample(2)
 label = Label(main_window, image=train_photo)
 label.place(x=50, y=310)
+
 
 start_button = Button(main_window, 
                       text = 'Start', 
@@ -106,6 +295,7 @@ settings_button = Button(main_window,
                          activebackground='#0049b5',
                          activeforeground='black')
 settings_button.place(x = 1400, y = 550)
+
 
 
 mainloop()
