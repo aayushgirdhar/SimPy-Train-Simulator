@@ -183,18 +183,29 @@ class Train:
                 final_label = tk.Label(self.output_frame, text = f'[{datetime.now(timezone("Asia/Kolkata")).strftime("%H:%M:%S")}]: Train Leaving {name}', font = ('Segoe UI', 14), fg='black', width='80', anchor='w')
                 final_label.pack()
             else:
-                  destination_label = tk.Label(self.output_frame, text = f'[{datetime.now(timezone("Asia/Kolkata")).strftime("%H:%M:%S")}]: You have reached your destination', font = ('Segoe UI', 14), fg='black', width='80', anchor='w')
-                  destination_label.pack()
-                  anal_button = tk.Button(self.root, 
-                                            text = 'Show Analytics',
-                                            command=curve,
-                                            bd=5,
-                                            bg='#0049b5',
-                                            fg='white',
-                                            font = ('Segoe UI', 20, 'bold'),
-                                            activebackground='#0049b5',
-                                            activeforeground='black')
-                  anal_button.place(x = 465, y = 900)
+                    destination_label = tk.Label(self.output_frame, text = f'[{datetime.now(timezone("Asia/Kolkata")).strftime("%H:%M:%S")}]: You have reached your destination', font = ('Segoe UI', 14), fg='black', width='80', anchor='w')
+                    destination_label.pack()
+                    anal_button = tk.Button(self.root, 
+                                                text = 'Show Analytics',
+                                                command=curve,
+                                                bd=5,
+                                                bg='#0049b5',
+                                                fg='white',
+                                                font = ('Segoe UI', 20, 'bold'),
+                                                activebackground='#0049b5',
+                                                activeforeground='black')
+                    anal_button.place(x = 300, y = 900)
+                    home_button = tk.Button(self.root,
+                            text='Back',
+                            command=self.root.destroy,
+                            bd=5,
+                            bg='#0049b5',
+                            fg='white',
+                            width=9,
+                            font = ('Segoe UI', 20, 'bold'),
+                            activebackground='#0049b5',
+                            activeforeground='black')
+                    home_button.place(x = 550, y = 900)
             current_station = current_station+1
 
 class RailwayStation:

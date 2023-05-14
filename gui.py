@@ -84,6 +84,17 @@ class settings:
         accel_label.place(x = 1000, y = 600)
         retard_label.place(x = 1000, y = 650)
         wait_label.place(x = 1000, y = 700)
+        start_button = Button(self.settings_window, 
+                      text = 'Simulate',
+                      command=start_sim, 
+                      bd=5,
+                      bg='#0049b5',
+                      fg='white',
+                      width=9,
+                      font = ('Segoe UI', 20, 'bold'),
+                      activebackground='#0049b5',
+                      activeforeground='black')
+        start_button.place(x = 1200, y = 800)
             
     def get_index(self, *args):
         selected_train = self.train_select.get()
@@ -121,9 +132,6 @@ class settings:
             self.retard_drop["menu"]["activeborderwidth"] = '4'
             self.retard_drop["menu"]["bd"] = '7'
 
-    def enable(self):
-        start_button['state'] = 'normal'
-        self.settings_window.destroy()
       
     def elements(self):
         self.drop = OptionMenu(self.settings_window, self.train_select, *self.options, command=self.get_index)
@@ -225,18 +233,19 @@ class settings:
                      activebackground='#0049b5',
                      activeforeground='black')
         submit_button.place(x = 150, y = 800)
+        back_button = Button(self.settings_window, 
+                         text = 'Back', 
+                         command = self.settings_window.destroy,
+                         bd=5,
+                         bg='#0049b5',
+                         fg='white',
+                         width=9,
+                         font = ('Segoe UI', 20, 'bold'),
+                         activebackground='#0049b5',
+                         activeforeground='black')
+        back_button.place(x = 330, y = 800)
         
-        home_button = Button(self.settings_window,
-                     text='Home',
-                     command=self.enable,
-                     bd=5,
-                     bg='#0049b5',
-                     fg='white',
-                     width=9,
-                     font = ('Segoe UI', 20, 'bold'),
-                     activebackground='#0049b5',
-                     activeforeground='black')
-        home_button.place(x = 350, y = 800)
+        
 
 
 main_window = Tk()
@@ -249,7 +258,7 @@ title = Label(main_window,
 title.pack()
 
 
-train_photo = PhotoImage(file = "resources/train.png").subsample(2)
+train_photo = PhotoImage(file = "TrainStationSimulator/resources/train.png").subsample(2)
 label = Label(main_window, image=train_photo)
 label.place(x=50, y=360)
 
@@ -261,21 +270,10 @@ def start_sim():
                 font = ('Segoe UI', 40, 'bold'), 
                 fg='#0049b5').pack()
     main.run_simulation(int(user_settings['acceleration']), int(user_settings['retardation']), int(user_settings['index']), int(user_settings['waiting_time']), start_window)
-start_button = Button(main_window, 
-                      text = 'Start',
-                      command=start_sim, 
-                      bd=8,
-                      bg='#0049b5',
-                      fg='white',
-                      width=9,
-                      font = ('Segoe UI', 40, 'bold'),
-                      activebackground='#0049b5',
-                      activeforeground='black')
-start_button.place(x = 1400, y = 400)
-start_button['state'] = 'disabled'
+
 
 settings_button = Button(main_window, 
-                         text = 'Settings', 
+                         text = 'Start', 
                          command = settings,
                          bd=8,
                          bg='#0049b5',
@@ -284,5 +282,17 @@ settings_button = Button(main_window,
                          font = ('Segoe UI', 40, 'bold'),
                          activebackground='#0049b5',
                          activeforeground='black')
-settings_button.place(x = 1400, y = 600)
+settings_button.place(x = 1400, y = 500)
+exit_button = Button(main_window, 
+                         text = 'Exit', 
+                         command = main_window.destroy,
+                         bd=4,
+                         bg='#0049b5',
+                         width = 9,
+                         fg='white',
+                         font = ('Segoe UI', 15, 'bold'),
+                         activebackground='#0049b5',
+                         activeforeground='black')
+exit_button.place(x = 5, y = 1020)
+
 mainloop()
