@@ -14,6 +14,17 @@ from pytz import timezone
 vel= []
 timelst = []
 
+def pair_stations(train_index):
+    train = traindataset.trains[train_index]
+    station_pairs = []
+    for i in range(len(train['stations']) - 1):
+        # Extract city names from station names
+        source_city = train['stations'][i].split(' ')[0]
+        dest_city = train['stations'][i + 1].split(' ')[0]
+        station_pair = source_city + '-' + dest_city
+        station_pairs.append(station_pair)
+    return station_pairs
+
 class map():
     def __init__(self,root,index):
         self.root = root
@@ -29,26 +40,7 @@ class map():
         self.map_widget.fit_bounding_box((30.782630667272393, 75.14595236585862),(28.60072822864227, 78.74207076565204))
         self.root.update()
 
-def curve():
-    # Create the main figure and subplots
-    fig, axs = plt.subplots(1, 2, figsize=(8, 4))
-    plt.title('Analytics')
 
-
-    # Plot the speed-time curve on the first subplot
-    axs[0].plot(timelst, vel)
-    axs[0].set_title("Speed-Time Curve")
-    axs[0].set_xlabel("Time: (minutes)")
-    axs[0].set_ylabel("Speed: (km/hr)")
-
-    # Create a bar graph of the top speed on the second subplot
-    top_speed = np.max(vel)
-    axs[1].bar(0, top_speed, width=0.2)
-    axs[1].set_title("Top Speed")
-    axs[1].set_xticks([])
-    axs[1].set_ylabel("Speed: (km/hr)")
-
-    plt.show()
 
 class speedometer():
     # Set the self.canvas size and scale factor
@@ -187,7 +179,7 @@ class Train:
                     destination_label.pack()
                     anal_button = tk.Button(self.root, 
                                                 text = 'Show Analytics',
-                                                command=curve,
+                                                command=self.curve,
                                                 bd=5,
                                                 bg='#0049b5',
                                                 fg='white',
@@ -207,6 +199,31 @@ class Train:
                             activeforeground='black')
                     home_button.place(x = 550, y = 900)
             current_station = current_station+1
+    def curve(self):
+    # Create the main figure and subplots
+        fig, axs = plt.subplots(1, 2, figsize=(8, 4))
+        plt.title('Analytics')
+
+
+        # Plot the speed-time curve on the first subplot
+        axs[0].plot(timelst, vel)
+        axs[0].set_title("Speed-Time Curve")
+        axs[0].set_xlabel("Time: (minutes)")
+        axs[0].set_ylabel("Speed: (km/hr)")
+
+        # Create a bar graph of the top speed on the second subplot
+        # top_speed = np.max(vel)
+        # axs[1].bar(0, top_speed, width=0.2)
+        # axs[1].set_title("Top Speed")
+        # axs[1].set_xticks([])
+        # axs[1].set_ylabel("Speed: (km/hr)")
+        res = [traindataset.trains[self.i]['distances'][i + 1] - traindataset.trains[self.i]['distances'][i] for i in range(len(traindataset.trains[self.i]['distances'])-1)]
+        a   = pair_stations(self.i)
+        print ("The computed successive difference list is : " + str(res))
+        axs[1].bar(a,res)
+        axs[1].set_title("Distance between each station")
+
+        plt.show()
 
 class RailwayStation:
     def __init__(self, env, train, delay, index, root, output_frame):
